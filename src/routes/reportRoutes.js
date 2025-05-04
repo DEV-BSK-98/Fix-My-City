@@ -1,6 +1,6 @@
 import express from "express"
 import cloudinary from "../lib/cloudinary.js"
-import Report from "../models/Report.js"
+import Report from "../../models/Report.js"
 import protectRoute from "../middleware/auth_middleware.js"
 
 
