@@ -13,20 +13,21 @@ router.post ("/", protectRoute, async (req, res) => {
             title,
             caption,
             rating,
-            image,
+            // image,
             lat,
             lng
         } = req.body
 
-        if (!title || !caption || !rating || image || !lat ||lng) return res.status (400).json ({msg: "The Fields [title, caption, rating, (also Ensure that you give access to your location)] are all required"})
-
-        const imageUpload = await cloudinary.uploader.upload (image)
-        const imageUrl = imageUpload.secure_url
+        // if (!title || !caption || !rating || !lat ||lng) return res.status (400).json ({msg: "The Fields [title, caption, rating, (also Ensure that you give access to your location)] are all required"})
+        // if (image){
+        //     const imageUpload = await cloudinary.uploader.upload (image)
+        //     const imageUrl = imageUpload.secure_url
+        // }
         const newReport = new Report ({
             title,
             caption,
             rating,
-            image: imageUrl,
+            image: "imageUrl",
             lat,
             lng,
             user: req.user._id
@@ -77,7 +78,7 @@ router.delete ("/:id", protectRoute, async (req, res) => {
         if (!report) return res.status (204).json ({msg: "Report Not Found"})
         if (report.user.toString () !== res.user._id.toString ()) return res.status ().json ({msg: "Unauthorized"})
 
-        if (report.image && book.image.includes ("cloudinary")) {
+        if (report.image && report.image.includes ("cloudinary")) {
             try {
                 const publicId = report.image.split ('/').pop ().split (".")[0]
                 await cloudinary.uploader.destroy (publicId)

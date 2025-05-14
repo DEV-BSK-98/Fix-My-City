@@ -2,8 +2,8 @@
   "name": "fix-my-city-backend",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "BSK INC.",
