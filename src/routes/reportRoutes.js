@@ -13,21 +13,20 @@ router.post ("/", protectRoute, async (req, res) => {
             title,
             caption,
             rating,
-            // image,
+            image,
             lat,
             lng
         } = req.body
 
-        // if (!title || !caption || !rating || !lat ||lng) return res.status (400).json ({msg: "The Fields [title, caption, rating, (also Ensure that you give access to your location)] are all required"})
-        // if (image){
-        //     const imageUpload = await cloudinary.uploader.upload (image)
-        //     const imageUrl = imageUpload.secure_url
-        // }
+        if (!title || !image || !caption || !rating || !lat ||lng) return res.status (400).json ({msg: "The Fields [title, caption, rating, (also Ensure that you give access to your location)] are all required"})
+        const imageUpload = await cloudinary.uploader.upload (image)
+        const imageUrl = imageUpload.secure_url
+
         const newReport = new Report ({
             title,
             caption,
             rating,
-            image: "imageUrl",
+            image: imageUrl,
             lat,
             lng,
             user: req.user._id
@@ -49,12 +48,12 @@ router.post ("/", protectRoute, async (req, res) => {
 router.get ("/", protectRoute, async (req, res) => {
     try {
         const page = req.query.page || 1
-        const limit = req.query.limit || 20
+        const limit = req.query.limit || 2
         const skip = (page - 1) * limit
         const reports = await Report.find ().sort ({createdAt: -1})
         .skip (skip)
         .limit (limit)
-        .populate ("user", "firstName lastName otherName profileImage")
+        .populate ("user", "firstName lastName otherName profileImage username")
         const totalRecords = await Report.countDocuments ()
         return res.send (
             {
@@ -65,7 +64,7 @@ router.get ("/", protectRoute, async (req, res) => {
             }
         )
     } catch (err) {
-        console.log('====================================');
+        console.log('=============kkkkk=======================');
         console.log(`ERROR: ${err}`);
         console.log('====================================');
         res.status (500).json ({msg: "Failed to Fetch Reports"})

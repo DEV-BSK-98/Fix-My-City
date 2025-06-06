@@ -24,7 +24,7 @@ router.post ("/register", async (req, res) => {
         if (password.length < 8) return res.status (400).json ({msg: "Password must be greater than 8 characters long"})
         const checkUser = await User.findOne ({$or:[{email}, {nrc}, {phone}, {username}]})
         if (checkUser) return res.status (400).json ({msg: "User Already Exists"})
-        const profileImage = `https://api,dicebear.com/7.x/avataaars/svg?seed=${username}`
+        const profileImage = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
         const newUser = new User({
             email,
             firstName,
@@ -54,6 +54,8 @@ router.post ("/register", async (req, res) => {
                 firstName: newUser.firstName,
                 otherNames: newUser.otherNames,
                 lastName: newUser.lastName,
+                createdAt: newUser.createdAt
+
             },
             msg: `${newUser.firstName} ${newUser.otherNames} ${newUser.lastName} Created Successfully`
         })
@@ -88,6 +90,7 @@ router.post ("/login", async (req, res) => {
                 firstName: user.firstName,
                 otherNames: user.otherNames,
                 lastName: user.lastName,
+                createdAt: user.createdAt,
             },
             msg: `${user.firstName} ${user.otherNames} ${user.lastName} Logged In Successfully`
         })
