@@ -1,0 +1,59 @@
+.env
+node_modules
+# === Node.js ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+
+# === Environment variables ===
+.env
+.env.*.local
+.env.local
+
+# === Logs ===
+logs/
+*.log
+*.log.*
+
+# === Runtime data ===
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# === Build outputs ===
+dist/
+build/
+.out/
+.next/
+coverage/
+.tmp/
+.cache/
+.nyc_output/
+
+# === OS and Editor junk ===
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# === Misc ===
+*.tgz
+*.gz
+*.zip
+
+# === PM2 Logs ===
+pmlog/
+*.pm2.log
+
+# === TypeScript ===
+*.tsbuildinfo
+
+# === Optional: VSCode launch configs ===
+.vscode/launch.json
+.vscode/tasks.json
