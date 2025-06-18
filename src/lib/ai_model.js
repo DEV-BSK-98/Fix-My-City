@@ -1,5 +1,5 @@
-const tf = require('@tensorflow/tfjs-node')
-const path = require('path')
+import * as tf from '@tensorflow/tfjs-node'
+import path from 'path'
 
 async function loadModel() {
     const modelPath = 'file://./ai_classifier/model.json'
