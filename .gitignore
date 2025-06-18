@@ -57,3 +57,5 @@ pmlog/
 # === Optional: VSCode launch configs ===
 .vscode/launch.json
 .vscode/tasks.json
+package-lock.json
+package-lock.json
