@@ -1,5 +1,4 @@
 import * as tf from '@tensorflow/tfjs-node'
-import path from 'path'
 
 async function loadModel() {
     const modelPath = 'file://./ai_classifier/model.json'
@@ -29,5 +28,5 @@ export async function classifyImage(imageBuffer) {
     const classes = ['RDA', 'ZEMA']
     const predictedIndex = prediction.argMax(-1).dataSync()[0]
 
-    return { label: classes[predictedIndex], confidence: probabilities[predictedIndex] }
+    return { prediction: classes[predictedIndex], confidence: probabilities[predictedIndex] }
 }

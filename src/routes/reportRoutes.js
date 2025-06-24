@@ -2,20 +2,55 @@ import express from "express"
 import cloudinary from "../lib/cloudinary.js"
 import Report from "../models/report.js"
 import protectRoute from "../middleware/auth_middleware.js"
-import { classifyImage } from "../lib/ai_model.js"
+// import { classifyImage } from "../lib/ai_model.js"
+
+// const predict = async (base64Image) => {
+//     const matches = base64Image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
+//     let imageBuffer
+//     if (matches && matches.length === 3) {
+//         imageBuffer = Buffer.from(matches[2], 'base64')
+//     } else {
+//         imageBuffer = Buffer.from(base64Image, 'base64')
+//     }
+
+//     const result = await classifyImage(imageBuffer)
+//     return result
+// }
 
 const predict = async (base64Image) => {
     const matches = base64Image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
-    let imageBuffer
+    let pureBase64
     if (matches && matches.length === 3) {
-        imageBuffer = Buffer.from(matches[2], 'base64')
+        pureBase64 = matches[2]
     } else {
-        imageBuffer = Buffer.from(base64Image, 'base64')
+        pureBase64 = base64Image
     }
 
-    const result = await classifyImage(imageBuffer)
-    return result
-}
+    const payload = {
+        image_base64: pureBase64
+    }
+
+    try {
+        const response = await fetch('http://localhost:8000/predict', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        })
+
+        if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+        }
+
+        const result = await response.json()
+        return result
+    } catch (error) {
+        console.error('Prediction API error:', error)
+        throw error
+    }
+};
+
 
 const router = express.Router ()
 
@@ -35,7 +70,7 @@ router.post ("/", protectRoute, async (req, res) => {
         const prediction = await predict (image)
         const imageUpload = await cloudinary.uploader.upload (image)
         const imageUrl = imageUpload.secure_url
-        const report_is_for = prediction?.label || "No Authority Found"
+        const report_is_for = prediction?.prediction || "No Authority Found"
 
         const newReport = new Report ({
             title,
