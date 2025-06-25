@@ -45,7 +45,11 @@ const userSchema = new mongoose.Schema (
         userType: {
             type: String,
             default: "End User"
-        }
+        },
+        authorityType:  {
+            type: String,
+            default: "No Authority"
+        },
     },
     {
         timestamps: true
