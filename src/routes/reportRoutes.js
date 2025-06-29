@@ -40,7 +40,7 @@ const predict = async (base64Image) => {
         })
 
         if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTP error! status: ${response.status}`)
         }
 
         const result = await response.json()
@@ -65,12 +65,20 @@ router.post ("/", protectRoute, async (req, res) => {
             lat,
             lng
         } = req.body
-
-        if (!title || !image || !caption || !rating || !lat || !lng || !place) return res.status (400).json ({msg: "The Fields [title, caption, rating, (also Ensure that you give access to your location)] are all required"})
+        if (!title) return res.status (400).json ({msg: "title is Required"})
+        if (!image) return res.status (400).json ({msg: "image is Required"})
+        if (!place) return res.status (400).json ({msg: "place is Required"})
+        if (!caption) return res.status (400).json ({msg: "caption is Required"})
+        if (rating <= 0) return res.status (400).json ({msg: "rating is Required"})
+        if (!lat || !lng) return res.status (400).json ({msg: "Your Location is required is Required"})
         const prediction = await predict (image)
         const imageUpload = await cloudinary.uploader.upload (image)
         const imageUrl = imageUpload.secure_url
-        const report_is_for = prediction?.prediction || "No Authority Found"
+        
+        console.log('====================================');
+        console.log("CLOUD", imageUrl);
+        console.log('====================================');
+        const report_is_for = prediction?.prediction && prediction?.prediction !=  "Uncertain" ? prediction?.prediction : "No Authority Found"
 
         const newReport = new Report ({
             title,
@@ -83,9 +91,17 @@ router.post ("/", protectRoute, async (req, res) => {
             comment: "",
             lat,
             lng,
-            user: req.user._id
+            user: req.user._id,
         })
 
+        const now = new Date();
+        const reportCreatedTime = newReport.createdAt || now;
+        const diffMs = now - reportCreatedTime;
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        if (diffHours > 1) {
+            return res.status(400).json({ msg: "Stale request – Report too old to be submitted." });
+        }
         await newReport.save ()
         return res.status (201).json ({
             ...newReport,
@@ -93,7 +109,7 @@ router.post ("/", protectRoute, async (req, res) => {
         })
     } catch (err) {
         console.log('====================================')
-        console.log(`Error In Report Submit: ${err}`)
+        console.log(`Error In Report Submit: ${err.message}`)
         console.log('====================================')
         res.status (500).json ({msg: "Failed To Submit Report"})
     }
