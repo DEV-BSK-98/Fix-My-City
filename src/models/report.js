@@ -31,10 +31,6 @@ const reportSchema = new mongoose.Schema (
             ref: 'User',
             required: true,
         },
-        rating: {
-            type: String,
-            required: true,
-        },
         lat: {
             type: String,
             required: true,

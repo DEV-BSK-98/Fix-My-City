@@ -17,14 +17,14 @@ router.post ("/register", async (req, res) => {
             password,
             phone,
             userType,
-            authorityType,
+            authority,
             nrc
         } = req.body
         const authtypes = ['RDA', 'ZEMA']
         const utypes = ["End User", "Authority", "Super User"]
         const username = `${email}${firstName}${lastName}`
         const ut = userType && utypes.includes (userType)  ? userType : "End User"
-        const auty = authorityType && authtypes.includes (authorityType) ? authorityType : "No Authority"
+        const auty = authority && authtypes.includes (authority) ? authority : "No Authority"
         if (!nrc ||!email || !firstName || !lastName || !password || !phone) return res.status (400).json ({msg: "The following fields [ First Name, Last Name, Email, Password, NRC and Phone ] are all required"})
         if (password.length < 8) return res.status (400).json ({msg: "Password must be greater than 8 characters long"})
         const checkUser = await User.findOne ({$or:[{email}, {nrc}, {phone}, {username}]})
@@ -92,6 +92,7 @@ router.post ("/login", async (req, res) => {
                 profileImage: user.profileImage,
                 nrc: user.nrc,
                 userType: user.userType,
+                authorityType: user.authorityType,
                 phone: user.phone,
                 firstName: user.firstName,
                 otherNames: user.otherNames,
