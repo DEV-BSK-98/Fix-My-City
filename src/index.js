@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 3000
 app.use(express.json({ limit: '15mb' }))
 app.use (cors ())
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ msg: "Internal Server Error" });
+});
+
 app.use ("/api/auth/", authRoutes)
 app.use ("/api/report/", reportRoutes)
 
