@@ -61,6 +61,7 @@ const router = express.Router ()
 
 router.post ("/", protectRoute, async (req, res) => {
     try {
+
         const {
             title,
             caption,
@@ -70,6 +71,7 @@ router.post ("/", protectRoute, async (req, res) => {
             lat,
             lng
         } = req.body
+
         if (!title) return res.status (400).json ({msg: "title is Required"})
         if (!image) return res.status (400).json ({msg: "image is Required"})
         if (!place) return res.status (400).json ({msg: "place is Required"})
@@ -78,6 +80,7 @@ router.post ("/", protectRoute, async (req, res) => {
         if (!lat || !lng) return res.status (400).json ({msg: "Your Location is required"})
 
         const imageUrlObj = await upload (image)
+
         if (imageUrlObj?.error) return res.status (400).json ({msg: "Image Upload Failed"})
         const imageUrl = imageUrlObj?.msg
 
